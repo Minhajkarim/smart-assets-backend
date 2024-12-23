@@ -59,7 +59,7 @@ module.exports = (io) => {
                 console.error('Python script error output:', stderr);
             });
 
-            pyshell.end((err, code, signal) => {
+            pyshell.end((err) => {
                 if (err) {
                     console.error('Error during video processing:', err);
                     io.emit('processingUpdate', { progress: 100, message: 'Processing failed.' });
@@ -68,12 +68,7 @@ module.exports = (io) => {
 
                 console.log('Python script finished successfully.');
 
-                if (!pyshell.receivedMessages || pyshell.receivedMessages.length === 0) {
-                    console.error('No output received from Python script.');
-                    io.emit('processingUpdate', { progress: 100, message: 'Processing failed: No output received.' });
-                    return res.status(500).send({ error: 'No output received from Python script.' });
-                }
-
+                // Retrieve processed video output
                 try {
                     const output = JSON.parse(pyshell.receivedMessages[0]);
                     const processedVideoPath = path.join(__dirname, '..', output.output_video);
