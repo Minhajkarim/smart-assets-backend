@@ -5,9 +5,11 @@ const dotenv = require('dotenv');
 const http = require('http'); // Required for Socket.IO
 const { Server } = require('socket.io'); // Import Socket.IO
 const videoRoutes = require('./routes/videoRoutes');
+const path = require('path');
 
 dotenv.config();
 const app = express();
+
 
 // Create HTTP Server
 const server = http.createServer(app);
@@ -24,6 +26,8 @@ const io = new Server(server, {
 app.use(cors());
 app.use(express.json());
 app.use('/uploads', express.static('uploads')); // Serve static files
+// Serve static files from the "processed" folder
+app.use('/processed', express.static(path.join(__dirname, 'processed')));
 
 // MongoDB Connection
 mongoose
